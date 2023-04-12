@@ -1,0 +1,29 @@
+# Global configuration
+globalCheckNewVersion = true
+logLevel = "INFO"
+
+# Entry points configuration
+[entryPoints]
+[entryPoints.http]
+address = ":80"
+[entryPoints.https]
+address = ":443"
+
+# Middleware configuration
+[middlewares]
+[middlewares.redirect-to-https.redirectScheme]
+scheme = "https"
+
+# Backend configuration
+[backends]
+[backends.backend]
+[backends.backend.servers.server1]
+url = "http://backend:3000"
+
+# Frontend configuration
+[frontends]
+[frontends.frontend]
+backend = "backend"
+passHostHeader = true
+[frontends.frontend.routes.route1]
+rule = "Host(`frontend.example.com`)"
