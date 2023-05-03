@@ -1,29 +1,14 @@
-# Global configuration
-globalCheckNewVersion = true
-logLevel = "INFO"
+[log]
+level = "INFO"
 
-# Entry points configuration
+[api]
+dashboard = true
+
+[providers.docker]
+endpoint = "unix:///var/run/docker.sock"
+exposedByDefault = false
+
 [entryPoints]
-[entryPoints.http]
-address = ":80"
-[entryPoints.https]
-address = ":443"
+[entryPoints.dashboard]
+address = ":8081"
 
-# Middleware configuration
-[middlewares]
-[middlewares.redirect-to-https.redirectScheme]
-scheme = "https"
-
-# Backend configuration
-[backends]
-[backends.backend]
-[backends.backend.servers.server1]
-url = "http://backend:3000"
-
-# Frontend configuration
-[frontends]
-[frontends.frontend]
-backend = "backend"
-passHostHeader = true
-[frontends.frontend.routes.route1]
-rule = "Host(`frontend.example.com`)"
