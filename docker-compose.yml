@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3'
 
 services:
   frontend:
@@ -9,44 +9,29 @@ services:
       - dsys-network
     depends_on:
       - backend
-    deploy:
-      labels:
-        - "traefik.enable=true"
-        - "traefik.http.services.frontend.loadbalancer.server.port=3000"
-        - "traefik.http.routers.frontend.rule=Host(`frontend.local`)"
-        - "traefik.http.routers.frontend.entrypoints=http"
-        - "traefik.http.routers.frontend.middlewares=https-redirect"
-        - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
-      replicas: 1
+      - reverse-proxy
 
   backend:
     build: ./server
     networks:
       - dsys-network
+    labels:
+      - "traefik.http.routers.backend.rule=Host(`backend-dsy-challengetask2`)"
+    depends_on:
+      - reverse-proxy
     deploy:
-      labels:
-        - "traefik.enable=true"
-        - "traefik.http.services.backend1.loadbalancer.server.port=8080"
-        - "traefik.http.routers.backend1.rule=Host(`backend.local`) && PathPrefix(`/api`)"
-        - "traefik.http.routers.backend1.entrypoints=http"
-        - "traefik.http.routers.backend1.middlewares=https-redirect"
-        - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
       replicas: 2
 
-  traefik:
-    image: traefik:v2.5
-    command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.http.address=:80"
+  reverse-proxy:
+    image: traefik:v2.10
+    command: --api.insecure=true --providers.docker
     ports:
+      # The HTTP port
       - "80:80"
-      - "8081:8081"
-
+      # The Web UI (enabled by --api.insecure=true)
+      - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik.toml:/traefik.toml
     networks:
       - dsys-network
 
