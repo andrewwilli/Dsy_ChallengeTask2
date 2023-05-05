@@ -19,6 +19,7 @@ services:
       - "traefik.http.routers.backend.rule=Host(`backend-dsy-challengetask2`)"
     depends_on:
       - reverse-proxy
+      - mongo
     deploy:
       replicas: 2
 
@@ -35,7 +36,12 @@ services:
     networks:
       - dsys-network
   mongo:
-    image: mongo
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    ports:
+      - 27017:27017
     volumes:
       - todo-db:/data/db
 
