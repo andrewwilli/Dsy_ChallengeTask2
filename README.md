@@ -1,6 +1,6 @@
 # Dsy_ChallengeTask2
 
-# Challenge Task FS 2022
+# Challenge Task FS 2023
 
 This semester's challenge task (CT) is the design and implementation of a simple distributed system (of your choice), with at least one service with a websocket, and where a service instance can fail. The system needs to have the following components:
 
