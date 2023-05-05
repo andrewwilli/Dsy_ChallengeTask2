@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import "./App.css";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 function App() {
@@ -27,7 +28,7 @@ function App() {
 
   return (
     <div>
-      <h1>My Todo List</h1>
+      <h1>Todo List</h1>
       <Router>
         <nav>
           <ul>
