@@ -34,6 +34,12 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - dsys-network
+  mongo:
+    image: mongo
+    volumes:
+      - todo-db:/data/db
 
+volumes:
+  todo-db:
 networks:
   dsys-network:
