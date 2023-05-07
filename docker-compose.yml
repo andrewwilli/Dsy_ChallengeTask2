@@ -37,6 +37,8 @@ services:
       - dsys-network
   mongo:
     image: mongo:latest
+    networks:
+      - dsys-network
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: rootpassword
