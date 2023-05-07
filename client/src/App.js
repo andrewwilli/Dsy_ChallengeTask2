@@ -9,15 +9,21 @@ function App() {
 
   useEffect(() => {
     async function fetchTodos() {
-      const response = await axios.get("/api/todos");
-      setTodos(response.data);
+      const response = await axios.get("/todos").catch((err) => {
+        console.error(err);
+      });
+      if (Array.isArray(response.data)) {
+        setTodos(response.data);
+      } else {
+        setTodos([]);
+      }
     }
     fetchTodos();
   }, []);
 
   async function addTodo() {
     const todo = { title: newTodo, completed: false };
-    const response = await axios.post("/api/todos", todo);
+    const response = await axios.post("/todos", todo);
     setTodos([...todos, response.data]);
     setNewTodo("");
   }
@@ -50,6 +56,9 @@ function App() {
 }
 
 function Home({ todos }) {
+  if (!Array.isArray(todos)) {
+    return <div>Loading...</div>;
+  }
   return (
     <ul>
       {todos.map((todo) => (
@@ -71,4 +80,3 @@ function NewTodo({ newTodo, handleNewTodoChange, addTodo }) {
 }
 
 export default App;
-

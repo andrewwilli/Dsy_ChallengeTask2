@@ -15,26 +15,15 @@ const todoSchema = new mongoose.Schema({
 const Todo = mongoose.model("Todo", todoSchema);
 
 
-const MONGODB_URI = "mongodb://mongo:27017/my-todo-app-db";
+const MONGODB_URI = "mongodb://root:rootpassword@mongo:27017/todo-db?authSource=admin";
 mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
 app.get("/todos", async (req, res) => {
-  const todobaby = new Todo({
-    title: "Walk the dog",
-    completed: false,
-  });
-  await todobaby.save((err, result) => {
-    if (err) {
-      console.error(err);
-    } else {
-      console.log(result);
-    }
-  });
-  //const todos = await Todo.find();
-  res.json(todobaby);
+  const todos = await Todo.find();
+  res.json(todos);
 });
 
 app.post("/todos", async (req, res) => {
