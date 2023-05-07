@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from "react-router-dom";
+
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -56,6 +57,7 @@ function App() {
 }
 
 function Home({ todos }) {
+
   if (!Array.isArray(todos)) {
     return <div>Loading...</div>;
   }
@@ -71,10 +73,11 @@ function Home({ todos }) {
 }
 
 function NewTodo({ newTodo, handleNewTodoChange, addTodo }) {
+  const navigate = useNavigate();
   return (
     <div>
       <input type="text" value={newTodo} onChange={handleNewTodoChange} />
-      <button onClick={addTodo}>Add Todo</button>
+      <button onClick={() => { addTodo(); navigate('/'); }}>Add Todo</button>
     </div>
   );
 }
