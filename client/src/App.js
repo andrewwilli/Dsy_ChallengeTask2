@@ -28,7 +28,7 @@ function App() {
   }, []);
 
   async function addTodo() {
-    const todo = { title: newTodo, completed: false };
+    const todo = { title: newTodo, completed: false, priority: 1 };
     const response = await axios.post("/todos", todo);
     setTodos([...todos, response.data]);
     setNewTodo("");
@@ -40,14 +40,14 @@ function App() {
     setTodos(newTodos);
   }
 
-  async function handleToggleTodo (todoId, setTodos) {
+  async function handleToggleTodo (todoId) {
     const todoToUpdate = todos.find((todo) => todo._id === todoId);
     const updatedTodo = { ...todoToUpdate, completed: !todoToUpdate.completed };
     const response = await axios.put(`/todos/${todoId}`, updatedTodo);
     const updatedTodos = todos.map((todo) => (todo._id === todoId ? response.data : todo));
     setTodos(updatedTodos);
   };
-
+  
   function handleNewTodoChange(event) {
     setNewTodo(event.target.value);
   }
@@ -88,23 +88,35 @@ function App() {
 }
 
 function Home({ todos, deleteTodo, handleToggleTodo, setTodos }) {
-  if (!Array.isArray(todos)) {
+  if (!Array.isArray(todos) || todos.length === 0) {
     return <div>Loading...</div>;
   }
 
+  const sortedTodos = [...todos].sort((a, b) => {
+    if (a.completed && !b.completed) {
+      return 1;
+    }
+    if (!a.completed && b.completed) {
+      return -1;
+    }
+    return 0;
+  });
+
   return (
     <ul>
-      {todos.map((todo) => (
-        <li key={todo._id}>
-          <input
-            type="checkbox"
-            checked={todo.completed}
-            onChange={() => handleToggleTodo(todo._id, setTodos)}
-          />
-          {todo.title}{" "}
-          <button onClick={() => deleteTodo(todo._id)}>Delete</button>
-        </li>
-      ))}
+      {sortedTodos.map((todo) => {
+        return (
+          <li key={todo._id}>
+            <input
+              type="checkbox"
+              checked={todo.completed}
+              onChange={() => handleToggleTodo(todo._id, setTodos)}
+            />
+            {todo.title}{" "}
+            <button onClick={() => deleteTodo(todo._id)}>Delete</button>
+          </li>
+        );
+      })}
     </ul>
   );
 }
