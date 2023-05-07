@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from "react-router-dom";
-
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useNavigate,
+} from "react-router-dom";
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -29,6 +34,20 @@ function App() {
     setNewTodo("");
   }
 
+  async function deleteTodo(todoId) {
+    await axios.delete(`/todos/${todoId}`);
+    const newTodos = todos.filter((todo) => todo._id !== todoId);
+    setTodos(newTodos);
+  }
+
+  async function handleToggleTodo (todoId, setTodos) {
+    const todoToUpdate = todos.find((todo) => todo._id === todoId);
+    const updatedTodo = { ...todoToUpdate, completed: !todoToUpdate.completed };
+    const response = await axios.put(`/todos/${todoId}`, updatedTodo);
+    const updatedTodos = todos.map((todo) => (todo._id === todoId ? response.data : todo));
+    setTodos(updatedTodos);
+  };
+
   function handleNewTodoChange(event) {
     setNewTodo(event.target.value);
   }
@@ -48,36 +67,61 @@ function App() {
           </ul>
         </nav>
         <Routes>
-          <Route path="/" element={<Home todos={todos} />} />
-          <Route path="/new" element={<NewTodo newTodo={newTodo} handleNewTodoChange={handleNewTodoChange} addTodo={addTodo} />} />
+          <Route
+            path="/"
+            element={<Home todos={todos} deleteTodo={deleteTodo} handleToggleTodo={handleToggleTodo} setTodos={setTodos} />}
+          />
+          <Route
+            path="/new"
+            element={
+              <NewTodo
+                newTodo={newTodo}
+                handleNewTodoChange={handleNewTodoChange}
+                addTodo={addTodo}
+              />
+            }
+          />
         </Routes>
       </Router>
     </div>
   );
 }
 
-function Home({ todos }) {
-
+function Home({ todos, deleteTodo, handleToggleTodo, setTodos }) {
   if (!Array.isArray(todos)) {
     return <div>Loading...</div>;
   }
+
   return (
     <ul>
       {todos.map((todo) => (
         <li key={todo._id}>
-          {todo.title} - {todo.completed ? "Completed" : "Incomplete"}
+          <input
+            type="checkbox"
+            checked={todo.completed}
+            onChange={() => handleToggleTodo(todo._id, setTodos)}
+          />
+          {todo.title}{" "}
+          <button onClick={() => deleteTodo(todo._id)}>Delete</button>
         </li>
       ))}
     </ul>
   );
 }
 
+
 function NewTodo({ newTodo, handleNewTodoChange, addTodo }) {
   const navigate = useNavigate();
   return (
-    <div>
-      <input type="text" value={newTodo} onChange={handleNewTodoChange} />
-      <button onClick={() => { addTodo(); navigate('/'); }}>Add Todo</button>
+    <div className="new-todo-container">
+      <h2>Add New Todo</h2>
+      <form>
+        <label>
+          Title:
+          <input type="text" value={newTodo} onChange={handleNewTodoChange} />
+        </label>
+        <button className="add-todo-button" onClick={() => { addTodo(); navigate('/'); }}>Add Todo</button>
+      </form>
     </div>
   );
 }
