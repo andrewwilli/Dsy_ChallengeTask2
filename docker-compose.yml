@@ -3,37 +3,41 @@ version: '3'
 services:
   frontend:
     build: ./client
-    ports:
-      - "3000:3000"
     networks:
       - dsys-network
+    ports:
+      - "3000:3000"
     depends_on:
       - backend
-      - reverse-proxy
+      - loadbalancer
 
   backend:
     build: ./server
     networks:
       - dsys-network
-    labels:
-      - "traefik.http.routers.backend.rule=Host(`backend-dsy-challengetask2`)"
     depends_on:
-      - reverse-proxy
+      - loadbalancer
     deploy:
       replicas: 2
 
-  reverse-proxy:
-    image: traefik:v2.10
+  loadbalancer:
+    image: traefik:latest
     command: --api.insecure=true --providers.docker
     ports:
-      # The HTTP port
       - "80:80"
-      # The Web UI (enabled by --api.insecure=true)
       - "8080:8080"
+      - "443:443"
+      - "443:443/udp"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yml:/etc/traefik/traefik.yml
+      - ./traefik_dynamic.yml:/etc/traefik/traefik_dynamic.yml
+      - ./certs/key.pem:/etc/traefik/key.pem
+      - ./certs/cert.pem:/etc/traefik/cert.pem
+      - ./certs/cert.pem:/etc/ssl/certs/cert.pem
     networks:
       - dsys-network
+    restart: unless-stopped
 
 networks:
   dsys-network:

@@ -1,0 +1,28 @@
+http:
+  routers:
+    todo-frontend:
+      rule: "Host(`localhost`) && PathPrefix(`/`)"
+      service: todo-frontend
+      entryPoints:
+        - "websecure"
+      tls:
+        domains:
+          - main: "localhost"
+  services:
+    todo-frontend:
+      loadBalancer:
+        servers:
+          - url: "http://frontend:3000"
+    todo:
+      loadBalancer:
+        healthcheck:
+          path: "/"
+          interval: "10s"
+          timeout: "1s"
+        servers:
+          - url: "http://backend:3001"
+
+tls:
+  certificates:
+    - certFile: "/etc/traefik/cert.pem"
+      keyFile: "/etc/traefik/key.pem"

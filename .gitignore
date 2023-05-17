@@ -1,6 +1,9 @@
 # Intellij
 .idea/
 
+# Certificats
+certs/
+
 # Logs
 logs
 *.log
