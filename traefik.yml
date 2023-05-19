@@ -7,8 +7,8 @@ entryPoints:
     http:
       redirections:
         entryPoint:
-          to: websecure
-          scheme: https
+          to: "websecure"
+          scheme: "https"
   websecure:
     address: ":443"
     http3:
@@ -20,6 +20,7 @@ api:
 providers:
   file:
     filename: "/etc/traefik/traefik_dynamic.yml"
+    watch: true
 
 log:
   level: TRACE

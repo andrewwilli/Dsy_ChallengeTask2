@@ -1,14 +1,7 @@
 version: '3'
-
 services:
   frontend:
     build: ./client
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.web-service.rule=Host(`localhost`)
-      - traefik.http.routers.web-service.entrypoints=websecure
-      - traefik.http.routers.web-service.tls=true
-      - traefik.http.services.web-service.loadbalancer.server.port=3000
     networks:
       - dsys-network
     depends_on:
@@ -26,17 +19,13 @@ services:
       replicas: 2
 
   loadbalancer:
-    image: traefik:latest
-    ports:
-      - 80:80
-      - 443:443
-      - "443:443/udp"
+    image: caddy:latest
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik.yml:/etc/traefik/traefik.yml
-      - ./traefik_dynamic.yml:/etc/traefik/traefik_dynamic.yml
-      - ./certs/key.pem:/etc/traefik/key.pem
-      - ./certs/cert.pem:/etc/traefik/cert.pem
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
     networks:
       - dsys-network
     restart: unless-stopped

@@ -1,29 +1,9 @@
-http:
-  routers:
-    dashboard:
-      rule: "PathPrefix(`/api`) || PathPrefix(`/dashboard`)"
-      entrypoints:
-        - "web"
-      service: "api@internal"
-    todo:
-      rule: "Host(`localhost`)"
-      service: frontend
-      entryPoints:
-        - "websecure"
-      tls:
-        domains:
-          - main: "localhost"
-  services:
-    todo:
-      loadBalancer:
-        healthcheck:
-          path: "/"
-          interval: "10s"
-          timeout: "1s"
-        servers:
-          - url: "http://backend:3000"
-
 tls:
   certificates:
     - certFile: "/etc/traefik/cert.pem"
       keyFile: "/etc/traefik/key.pem"
+  stores:
+    default:
+      defaultCertificate:
+        certFile: "/etc/traefik/cert.pem"
+        keyFile: "/etc/traefik/key.pem"
