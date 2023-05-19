@@ -5,8 +5,6 @@ services:
     build: ./client
     networks:
       - dsys-network
-    ports:
-      - "3000:3000"
     depends_on:
       - backend
       - loadbalancer
@@ -23,7 +21,6 @@ services:
 
   loadbalancer:
     image: traefik:latest
-    command: --api.insecure=true --providers.docker
     ports:
       - "80:80"
       - "8080:8080"
@@ -35,10 +32,10 @@ services:
       - ./traefik_dynamic.yml:/etc/traefik/traefik_dynamic.yml
       - ./certs/key.pem:/etc/traefik/key.pem
       - ./certs/cert.pem:/etc/traefik/cert.pem
-      - ./certs/cert.pem:/etc/ssl/certs/cert.pem
     networks:
       - dsys-network
     restart: unless-stopped
+
   mongo:
     image: mongo:latest
     networks:
@@ -46,8 +43,6 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: rootpassword
-    ports:
-      - 27017:27017
     volumes:
       - todo-db:/data/db
 

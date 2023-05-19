@@ -1,18 +1,19 @@
 http:
   routers:
-    todo-frontend:
-      rule: "Host(`localhost`) && PathPrefix(`/`)"
-      service: todo-frontend
+    dashboard:
+      rule: "PathPrefix(`/api`) || PathPrefix(`/dashboard`)"
+      entrypoints:
+        - "web"
+      service: "api@internal"
+    todo:
+      rule: "Host(`localhost`)"
+      service: frontend
       entryPoints:
         - "websecure"
       tls:
         domains:
           - main: "localhost"
   services:
-    todo-frontend:
-      loadBalancer:
-        servers:
-          - url: "http://frontend:3000"
     todo:
       loadBalancer:
         healthcheck:
@@ -20,7 +21,7 @@ http:
           interval: "10s"
           timeout: "1s"
         servers:
-          - url: "http://backend:3001"
+          - url: "http://backend:3000"
 
 tls:
   certificates:
