@@ -7,6 +7,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const backendId = process.env.HOSTNAME || 'unknown';
+
 const todoSchema = new mongoose.Schema({
   title: String,
   completed: Boolean,
@@ -24,6 +26,7 @@ mongoose.connect(MONGODB_URI, {
 app.get("/todos", async (req, res) => {
   const todos = await Todo.find();
   res.json(todos);
+  console.log("This is backend id: " + backendId);
 });
 
 app.post("/todos", async (req, res) => {
