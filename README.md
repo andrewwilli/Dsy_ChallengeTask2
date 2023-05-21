@@ -26,6 +26,7 @@ Hand-in 1: 17.04.2023, 23:59 (CET)  - initial version of your project.
 Final hand-in: 22.05.2023, 23:59 (CET) (CET) - well documented infrastructure, presentation (slides) of the application, also showing the architecture and design decisions via email to thomas.ost-at-bocek.ch or via a repository invite. The code and configuration should be easy to read and/or well documented, the presentation (slides or text) should show the architecture, components, and design decisions. During the weeks 23.05./30.05., you will present and demo your solutions onsite.
 
 ## Architecture Overview
+![Architecture](/images/architecture.png)
 There are 4 components:
 - React
 
@@ -37,6 +38,7 @@ There are 4 components:
 - MongoDB
 
 ## Layer Architecture
+![Layer](/images/layer_architecture.png)
 
 ## Frontend/Presentation layer
 Technology stack:
