@@ -12,15 +12,17 @@ entryPoints:
   websecure:
     address: ":443"
     http3:
-      advertisedPort: "443"
+      advertisedPort: 443
 
 api:
   dashboard: true
 
 providers:
+  docker:
+    exposedByDefault: false
   file:
     filename: "/etc/traefik/traefik_dynamic.yml"
     watch: true
 
 log:
-  level: TRACE
+  level: INFO
