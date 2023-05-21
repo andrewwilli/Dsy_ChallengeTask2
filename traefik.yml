@@ -1,0 +1,28 @@
+experimental:
+  http3: true
+
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: "websecure"
+          scheme: "https"
+  websecure:
+    address: ":443"
+    http3:
+      advertisedPort: 443
+
+api:
+  dashboard: true
+
+providers:
+  docker:
+    exposedByDefault: false
+  file:
+    filename: "/etc/traefik/traefik_dynamic.yml"
+    watch: true
+
+log:
+  level: INFO

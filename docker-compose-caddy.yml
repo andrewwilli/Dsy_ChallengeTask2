@@ -1,0 +1,46 @@
+version: '3'
+services:
+  frontend:
+    build: ./client
+    networks:
+      - dsys-network
+    depends_on:
+      - backend
+      - loadbalancer
+
+  backend:
+    build: ./server
+    networks:
+      - dsys-network
+    depends_on:
+      - loadbalancer
+      - mongo
+    deploy:
+      replicas: 2
+
+  loadbalancer:
+    image: caddy:latest
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    networks:
+      - dsys-network
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:latest
+    networks:
+      - dsys-network
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    volumes:
+      - todo-db:/data/db
+
+volumes:
+  todo-db:
+networks:
+  dsys-network:

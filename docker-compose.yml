@@ -1,0 +1,57 @@
+version: '3'
+
+services:
+  frontend:
+    build: ./client
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.web-service.rule=Host(`localhost`)
+      - traefik.http.routers.web-service.entrypoints=websecure
+      - traefik.http.routers.web-service.tls=true
+      - traefik.http.services.web-service.loadbalancer.server.port=3000
+    networks:
+      - dsys-network
+    depends_on:
+      - backend
+      - loadbalancer
+
+  backend:
+    build: ./server
+    networks:
+      - dsys-network
+    depends_on:
+      - loadbalancer
+      - mongo
+    deploy:
+      replicas: 2
+
+  loadbalancer:
+    image: traefik:latest
+    ports:
+      - 80:80
+      - "443:443/tcp"
+      - "443:443/udp"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yml:/etc/traefik/traefik.yml
+      - ./traefik_dynamic.yml:/etc/traefik/traefik_dynamic.yml
+      - ./certs/key.pem:/etc/traefik/key.pem
+      - ./certs/cert.pem:/etc/traefik/cert.pem
+    networks:
+      - dsys-network
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:latest
+    networks:
+      - dsys-network
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    volumes:
+      - todo-db:/data/db
+
+volumes:
+  todo-db:
+networks:
+  dsys-network:

@@ -1,0 +1,13 @@
+{
+  http_port 80
+  https_port 443
+}
+
+localhost {
+  reverse_proxy frontend:3000
+  header Alt-Svc: h3=":443"; ma=86400
+}
+
+localhost/api {
+  reverse_proxy backend:3001
+}
