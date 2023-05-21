@@ -68,7 +68,7 @@ The backend layer is the foundation of the application and defines services and 
 ## Usage with Docker
 
 ```
-sudo docker-compose up --build
+docker-compose up --build
 ```
 This will take a second so please have little patience.
-After that open your browser at http://localhost
+After that open your browser at https://localhost
