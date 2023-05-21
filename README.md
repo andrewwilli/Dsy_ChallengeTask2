@@ -26,21 +26,16 @@ Hand-in 1: 17.04.2023, 23:59 (CET)  - initial version of your project.
 Final hand-in: 22.05.2023, 23:59 (CET) (CET) - well documented infrastructure, presentation (slides) of the application, also showing the architecture and design decisions via email to thomas.ost-at-bocek.ch or via a repository invite. The code and configuration should be easy to read and/or well documented, the presentation (slides or text) should show the architecture, components, and design decisions. During the weeks 23.05./30.05., you will present and demo your solutions onsite.
 
 ## Architecture Overview
+There are 4 components:
+- React
 
-React
-- Listens to port 3000
-- Port 3000 is exposed
+- Traefik
+  - Listens to all traffic on port 80 (http) which redirects 443 (https)
 
+- Nodejs
 
-Traefik
-- Listens to all traffic on port 80 (http) and 8080
+- MongoDB
 
-Nodejs
-- Listening on port 80 for Docker container
-- Containers are only reachable through Traefik
-
-MongoDB
-- Listens to default port 27017
 ## Layer Architecture
 
 ## Frontend/Presentation layer
