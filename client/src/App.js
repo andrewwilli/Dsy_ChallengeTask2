@@ -9,10 +9,17 @@ import {
   useNavigate,
 } from "react-router-dom";
 
+/**
+ * Main application component.
+ * @returns {JSX.Element} The rendered component.
+ */
 function App() {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
 
+  /**
+   * Fetches todos from the server.
+   */
   useEffect(() => {
     async function fetchTodos() {
       const response = await axios.get("/todos").catch((err) => {
@@ -27,6 +34,9 @@ function App() {
     fetchTodos();
   }, []);
 
+  /**
+   * Adds a new todo.
+   */
   async function addTodo() {
     const todo = { title: newTodo, completed: false, priority: 1 };
     const response = await axios.post("/todos", todo);
@@ -34,12 +44,20 @@ function App() {
     setNewTodo("");
   }
 
+  /**
+   * Deletes a todo.
+   * @param {string} todoId - The ID of the todo to delete.
+   */
   async function deleteTodo(todoId) {
     await axios.delete(`/todos/${todoId}`);
     const newTodos = todos.filter((todo) => todo._id !== todoId);
     setTodos(newTodos);
   }
 
+  /**
+   * Toggles the completion status of a todo.
+   * @param {string} todoId - The ID of the todo to toggle.
+   */
   async function handleToggleTodo (todoId) {
     const todoToUpdate = todos.find((todo) => todo._id === todoId);
     const updatedTodo = { ...todoToUpdate, completed: !todoToUpdate.completed };
@@ -48,6 +66,10 @@ function App() {
     setTodos(updatedTodos);
   };
   
+  /**
+   * Handles changes to the new todo input.
+   * @param {Event} event - The change event.
+   */
   function handleNewTodoChange(event) {
     setNewTodo(event.target.value);
   }
@@ -87,6 +109,14 @@ function App() {
   );
 }
 
+/**
+ * Renders the home page with the list of todos.
+ * @param {Object[]} props.todos - The list of todos.
+ * @param {Function} props.deleteTodo - The function to delete a todo.
+ * @param {Function} props.handleToggleTodo - The function to toggle the completion status of a todo.
+ * @param {Function} props.setTodos - The function to set the list of todos.
+ * @returns {JSX.Element} The rendered component.
+ */
 function Home({ todos, deleteTodo, handleToggleTodo, setTodos }) {
   if (!Array.isArray(todos) || todos.length === 0) {
     return <div>Loading...</div>;
@@ -121,7 +151,13 @@ function Home({ todos, deleteTodo, handleToggleTodo, setTodos }) {
   );
 }
 
-
+/**
+ * Renders the new todo form.
+ * @param {string} props.newTodo - The value of the new todo input.
+ * @param {Function} props.handleNewTodoChange - The function to handle changes to the new todo input.
+ * @param {Function} props.addTodo - The function to add a new todo.
+ * @returns {JSX.Element} The rendered component.
+ */
 function NewTodo({ newTodo, handleNewTodoChange, addTodo }) {
   const navigate = useNavigate();
   return (
