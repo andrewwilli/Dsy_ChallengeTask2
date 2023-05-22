@@ -7,6 +7,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Hostname to identify backend
 const backendId = process.env.HOSTNAME || 'unknown';
 
 const todoSchema = new mongoose.Schema({
@@ -16,12 +17,14 @@ const todoSchema = new mongoose.Schema({
 
 const Todo = mongoose.model("Todo", todoSchema);
 
-
+// Connect to MongoDB via root user
 const MONGODB_URI = "mongodb://root:rootpassword@mongo:27017/todo-db?authSource=admin";
 mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+
+// HTTP methods
 
 app.get("/todos", async (req, res) => {
   const todos = await Todo.find();
@@ -53,6 +56,7 @@ app.delete("/todos/:id", async (req, res) => {
   res.json({ message: "Todo deleted successfully" });
 });
 
+// Start the server on the provided port
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
